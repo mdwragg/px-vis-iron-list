@@ -1,99 +1,176 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Predix UI</title>
+<!-- Common imports -->
+<link rel="import" href="../../polymer/polymer.html" />
+<link rel="import" href="../../px-polymer-font-awesome/px-polymer-font-awesome.html" />
 
-    <!--
-      Fast bootstrapping of the webcomponents-lite library. Only loads the library
-      if the browser doesn't natively support web components.
-    -->
-    <script type="text/javascript">
-    (function() {
-      'use strict';
+<!-- Common demo imports -->
+<link rel="import" href="../../px-demo/px-demo-header.html" />
+<link rel="import" href="../../px-demo/px-demo-api-viewer.html" />
+<link rel="import" href="../../px-demo/px-demo-footer.html" />
+<link rel="import" href="../../px-demo/px-demo-configs.html" />
+<link rel="import" href="../../px-demo/px-demo-props.html" />
+<link rel="import" href="../../px-demo/px-demo-interactive.html" />
+<link rel="import" href="../../px-demo/px-demo-component-snippet.html" />
 
-      var onload = function() {
-        // For native Imports, manually fire WebComponentsReady so user code
-        // can use the same code path for native and polyfill'd imports.
-        if (!window.HTMLImports) {
-          document.dispatchEvent(
-            new CustomEvent('WebComponentsReady', {bubbles: true})
-          );
+<!-- Imports for this componnent -->
+<link rel="import" href="../../px-demo/css/px-demo-styles.html" />
+<link rel="import" href="../px-vis-iron-list.html" />
+
+<!-- Demo DOM module -->
+<dom-module id="local-element-demo">
+  <template>
+        <px-vis-iron-list
+          counter-value="{{props.counterValue.value}}">
+        </px-vis-iron-list>
+
+  </template>
+
+</dom-module>
+<script>
+  Polymer({
+    is: 'local-element-demo',
+
+    properties: {
+
+      /**
+       * Note: The actual data/values for `props` are placed in `this.demoProps`
+       * to create a static reference that Polymer shouldn't overwrite.
+       *
+       * On object containing all the properties the user can configure for this
+       * demo. Usually a pretty similar copy of the component's `properties` block
+       * with some additional sugar added to describe what kind of input the
+       * user will be shown and how that input should be configured.
+       *
+       * Note that `value` for each property is the default that will be set
+       * unless a config from `configs` is applied by default.
+       *
+       * @example
+       *
+       * `demoProps` is an object containing multipe objects. Each sub-object has
+       * should have a key with the name of the configurable property, and a set
+       * of values that describe that property. At a high level, you might have:
+       *
+       * ```
+       *     {
+       *       preventRangeSelection: { ... },
+       *       displayMode: { ... },
+       *       blockDatesBefore: { ... }
+       *     }
+       * ```
+       *
+       * Each sub-object should contain information about the configurable property's
+       * `type` (a reference to the JavaScript literal), a default value, and a set
+       * of additional keys that describe the input it can be changed with.
+       * The following inputs types are currently available:
+       *
+       * - 'toggle' - A toggle switch input to set Boolean values
+       * - 'text' - A simple single-line text input to set String or stringified Array/Object values
+       * - 'dropdown' - A dropdown picker that can be used to select any kind of value from a list of available options
+       *
+       * Full examples for each input:
+       *
+       * ```
+       *     {
+       *       preventRangeSelection: {
+       *         type: Boolean,
+       *         value: false,
+       *         inputType: 'toggle'
+       *       },
+       *       displayMode: {
+       *         type: String,
+       *         value: 'day',
+       *         inputType: 'dropdown',
+       *         inputChoices: ['day', 'month', 'year']
+       *       },
+       *       blockDatesBefore: {
+       *         type: String,
+       *         value: '2016-10-10T00:00:00.000Z',
+       *         inputType: 'text',
+       *         inputPlaceholder: 'ISO 8601 String'
+       *       }
+       *     }
+       * ```
+       *
+       * By default, the configurable property names are converted from camelCase
+       * to Title Case and used as input labels (e.g. 'displayMode' -> 'Display Mode').
+       * Labels can be set manually through the key `inputLabel`:
+       *
+       * ```
+       *     {
+       *       preventRangeSelection: {
+       *         type: Boolean,
+       *         value: false,
+       *         inputType: 'toggle',
+       *         inputLabel: "Stop range selection"
+       *       }
+       *     }
+       * ```
+       *
+       * @property demoProps
+       * @type {Object}
+       */
+      props: {
+        type: Object,
+        value: function(){ return this.demoProps; }
+      },
+
+      /**
+       * An array of pre-configured `props` that can be used to provide the user
+       * with a set of common examples. These configs will be made available
+       * as a set of tabs the user can click that will automatically change
+       * the `props` to specific values.
+       *
+       * @example
+       *
+       * Each config is an object. Its keys should be the names of the configurable
+       * properties defined in your `demoProps` above. Each key's value should
+       * be the new prop value for the configuration. You can also include these
+       * optional keys:
+       *
+       * - `configName` - a String value that will be used for the title of the tab
+       * - `configReset` - a Boolean, if `true` resets all props (even those not specified in the config) when this config is selected. Defaults to `false`.
+       *
+       * Example of two configs:
+       *
+       * ```
+       *     [
+       *       {
+       *         configName: "Basic",
+       *         preventRangeSelection: true,
+       *         displayMode: 'year',
+       *         blockDatesBefore: '2016-10-10T00:00:00.000Z'
+       *       },
+       *       {
+       *         configName: "Advanced",
+       *         preventRangeSelection: false,
+       *         displayMode: 'day',
+       *         blockDatesBefore: '2010-10-10T00:00:00.000Z'
+       *       }
+       *     ]
+       * ```
+       *
+       * @property demoProps
+       * @type {Array}
+       */
+      configs: {
+        type: Array,
+        value: function(){
+          return [
+            { configName: "Default",
+              configReset: true }
+          ]
         }
-      };
-
-      var webComponentsSupported = (
-        'registerElement' in document && 'import' in document.createElement('link') && 'content' in document.createElement('template')
-      );
-
-      if (!webComponentsSupported) {
-        var script = document.createElement('script');
-        script.async = true;
-        script.src = '../webcomponentsjs/webcomponents-lite.min.js';
-        script.onload = onload;
-        document.head.appendChild(script);
-      } else {
-        onload();
       }
-    })();
-    </script>
+    },
 
-    <!--
-      Load the Polymer library.
-    -->
-    <link rel="import" href="../polymer/polymer.html" />
-
-    <!--
-      Load the light theme (default theme).
-    -->
-    <link rel="import" href="../px-theme/px-theme-styles.html">
-    <style include="px-theme-styles" is="custom-style"></style>
-
-    <!--
-      Asynchronously import the px-catalog element, which is the entrypoint
-      for our application.
-    -->
-    <link
-        async
-        id="main-element-import"
-        rel="import"
-        href="demo/index.html">
-
-    <!--
-      Load the app icon and manifest for Android devices.
-    -->
-    <link defer rel="icon" href="favicon.ico" type="image/x-icon" />
-
-    <!--
-      Basic page styles.
-    -->
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
+    /**
+     * A reference for `this.props`. Read the documentation there.
+     */
+    demoProps: {
+      counterValue: {
+        type: Number,
+        defaultValue: '0',
+        inputType: 'text'
       }
-    </style>
-  </head>
-
-  <body>
-    <!-- Elements wait on the page and are upgraded after demo/index.html is loaded. -->
-    <local-element-demo></local-element-demo>
-
-    <!--
-      Attempt to register a service worker with the correct scope. Fail quietly
-      if this doesn't work, but log the result to the console.
-    -->
-    <script type="text/javascript">
-      // if ('serviceWorker' in navigator) {
-      //   navigator.serviceWorker.register('service-worker.js').then(function(registration) {
-      //     // Registration was successful
-      //     console.log('ServiceWorker registration successful with scope: ', registration.scope);
-      //   }).catch(function(err) {
-      //     // registration failed :(
-      //     console.log('ServiceWorker registration failed: ', err);
-      //   });
-      // }
-    </script>
-  </body>
-</html>
+    }
+  });
+</script>
