@@ -1,0 +1,2 @@
+'use strict';(function(){Polymer({is:'px-vis-iron-list',properties:{items:{type:Array,value:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}},handleClick:function handleClick(event,detail,sender){this.increment()},increment:function increment(){this.counterValue++}})})();
+//# sourceMappingURL=px-vis-iron-list.js.map
